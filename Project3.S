@@ -1,8 +1,10 @@
 #Start
-.data:
+.data
 	str1: .asciiz "Please enter an integer:"
 	str2: .asciiz "Please enter an operator (+, -, *, /):"
-.text:
+
+
+.text
 main:
 	#print the 1st prompt message
 	li $v0, 4
@@ -33,6 +35,10 @@ main:
 	move $t1, $v0
 	syscall
 
+
+exit:
+	li $v0, 10
+	syscall
 
 
 
