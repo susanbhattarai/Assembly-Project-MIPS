@@ -1,6 +1,7 @@
 .data
   str1: .asciiz "Please enter an integer:\n"
   str2: .asciiz "Please enter an operator (+, -, *, /):\n"
+  addchar: .byte '+'
 
 .text
 
@@ -14,6 +15,15 @@ main:
   li, $v0, 5
   syscall
   move $s0, $v0
+
+  #Print the character message prompt
+  li $v0, 4
+  la $a0, str2
+  syscall
+
+  li $v0, 12
+  syscall
+  move $s2, $v0
 
   # Print 2nd string prompt message and read the 1st integer
 
@@ -29,14 +39,18 @@ main:
 
   move $a0, $s0
   move $a1, $s1
-  jal do_add
 
+  lb $t0, addchar
+  beq $t0, $s2, LADD
+
+LADD:
+  jal do_add
   move $a0, $v0
   li, $v0, 1
   syscall
 
   # end the program
-
+exit:
   li $v0, 10
   syscall
 
