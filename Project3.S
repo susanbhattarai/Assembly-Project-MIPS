@@ -1,7 +1,10 @@
 .data
-  str1: .asciiz "Please enter an integer:\n"
+  str1: .asciiz "\nPlease enter an integer:\n"
   str2: .asciiz "Please enter an operator (+, -, *, /):\n"
   addchar: .byte '+'
+  subtractchar: .byte '-'
+  multchar: .byte '*'
+  dividechar: .byte '/'
 
 .text
 
@@ -41,7 +44,27 @@ main:
   move $a1, $s1
 
   lb $t0, addchar
+  lb $t1, subtractchar
   beq $t0, $s2, LADD
+  beq $t1, $s2, LSUB
+
+LSUB:
+  nor $t1, $a1, $zero
+  ori $t1, $t1, 1
+  move $a1, $t1
+  move $s3, $a0
+  li  $a0, 1
+  jal do_add
+  move $a1, $v0
+  move $a0, $s3
+  jal do_add
+  move $a0, $v0
+  li $v0, 1
+  syscall
+  j exit
+
+
+
 
 LADD:
   jal do_add
@@ -70,8 +93,7 @@ do_add:
 
 do_add_loop:
   beq $s1, $zero, do_add_break
-
-  sll $s1, $s1, 1  #carry << 1
+  sll $s1, $s1, 1  #carry = carry<< 1
   xor $t0, $s0, $s1 #temp = sum ^ carry
   and $s1, $s0, $s1 #carry = sum & carry
   move $s0, $t0 # sum = temp
